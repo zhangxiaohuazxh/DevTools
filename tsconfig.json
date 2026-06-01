@@ -31,11 +31,12 @@
   },
   "include": [
     "src",
-    "types"
+    "types",
+    "src/scripts/**/*"
   ],
   "references": [
     {
       "path": "./tsconfig.node.json"
     }
-  ],
+  ]
 }
