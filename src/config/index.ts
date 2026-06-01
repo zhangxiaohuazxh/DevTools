@@ -1,0 +1,6 @@
+
+const antdConfig = {
+
+}
+
+export { antdConfig }
