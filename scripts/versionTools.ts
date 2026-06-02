@@ -1,9 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import dayjs from 'dayjs';
 
 interface Options {
-    fileName: string
+    fileName?: string
     version?: number | string
+    releaseTime?: string
 }
 
 export const generateVersionPlugin = (options?: Options) => {
@@ -27,18 +29,19 @@ export const generateVersionPlugin = (options?: Options) => {
                     }
                 }
                 const version: Options = {
-                    fileName: "version.json",
+                    fileName: "release.json",
                     version: finalVersion
                 };
                 const outDir = path.resolve(process.cwd(), 'dist');
-                const filePath = path.resolve(outDir, version.fileName);
-                const versionInfo = {
-                    version,
-                    buildTime: new Date().toLocaleString(),
+                const filePath = path.resolve(outDir, version.fileName ?? 'release.json');
+                const versionInfo: Options = {
+                    ...version,
+                    releaseTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
                 };
                 if (!fs.existsSync(outDir)) {
-                    fs.mkdirSync(outDir, {recursive: true});
+                    fs.mkdirSync(outDir, { recursive: true });
                 }
+                delete versionInfo.fileName;
                 fs.writeFileSync(filePath, JSON.stringify(versionInfo, null, 2), 'utf-8');
                 console.log(`\n✨ [Vite Version Plugin] 成功将版本号写入到: ${filePath}\n`);
             } catch (error) {
