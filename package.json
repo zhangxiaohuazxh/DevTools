@@ -16,9 +16,16 @@
     "@tauri-apps/plugin-opener": "^2",
     "antd": "^6.4.3",
     "dayjs": "^1.11.21",
+    "echarts": "^6.1.0",
+    "es-toolkit": "^1.47.0",
+    "kline-charts-react": "^0.0.6",
+    "motion": "^12.40.0",
+    "okx-api": "^3.1.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.15.1"
+    "react-financial-charts": "^2.0.1",
+    "react-router-dom": "^7.15.1",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",

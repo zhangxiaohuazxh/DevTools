@@ -1,9 +1,7 @@
+import React from "react"
 
-
-function Launcher() {
+export const Launcher: React.FC = () => {
     return (<>
 
     </>)
 }
-
-export default Launcher
