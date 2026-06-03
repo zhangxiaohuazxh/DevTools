@@ -7,32 +7,31 @@ import { Task } from '@/views/task'
 
 const router = createBrowserRouter([
     {
-        path: "/",
+        path: '/',
         element: <AppLayout />,
         children: [
             {
                 index: true,
-                element: <Dashboard />
+                element: <Dashboard />,
             },
             {
                 path: 'tools',
-                element: <Tools />
+                element: <Tools />,
             },
             {
                 path: '/task',
-                element: <Task />
+                element: <Task />,
             },
             {
                 path: '*',
-                element: <NotFound />
-            }
-        ]
+                element: <NotFound />,
+            },
+        ],
     },
     {
         path: '*',
-        element: <NotFound />
-    }
+        element: <NotFound />,
+    },
 ])
-
 
 export default router

@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 
 interface IconProps {
     name: string
@@ -8,7 +8,14 @@ interface IconProps {
     className?: string
 }
 
-const SvgIcon: React.FC<IconProps> = ({ name, fill = '#333', width = 24, height = 24, className, ...props }) => {
+const SvgIcon: React.FC<IconProps> = ({
+    name,
+    fill = '#333',
+    width = 24,
+    height = 24,
+    className,
+    ...props
+}) => {
     return (
         <svg
             className={className}
@@ -28,7 +35,7 @@ const SvgIcon: React.FC<IconProps> = ({ name, fill = '#333', width = 24, height 
         >
             <use href={`#icon-${name}`} fill={fill} />
         </svg>
-    );
+    )
 }
 
 export default SvgIcon

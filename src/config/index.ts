@@ -1,6 +1,3 @@
-
-const antdConfig = {
-
-}
+const antdConfig = {}
 
 export { antdConfig }
