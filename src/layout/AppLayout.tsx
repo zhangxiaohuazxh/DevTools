@@ -1,6 +1,7 @@
 import { Layout } from 'antd'
 import AppSider from '@/layout/AppSider'
 import { Outlet } from 'react-router-dom'
+import '@/assets/style/layout.css'
 
 const { Sider, Content } = Layout
 
@@ -19,11 +20,11 @@ const contentStyle: React.CSSProperties = {
 function AppLayout() {
     return (
         <>
-            <Layout style={layoutStyle}>
-                <Sider width="8%" style={siderStyle}>
+            <Layout style={layoutStyle} className="window-layout">
+                <Sider style={siderStyle} className="sidebar">
                     <AppSider />
                 </Sider>
-                <Content style={contentStyle}>
+                <Content style={contentStyle} className="app-launcher">
                     <Outlet />
                 </Content>
             </Layout>

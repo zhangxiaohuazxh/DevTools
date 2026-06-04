@@ -4,6 +4,7 @@ import NotFound from '@/layout/status/NotFound'
 import AppLayout from '@/layout/AppLayout'
 import { Tools } from '@/views/tools'
 import { Task } from '@/views/task'
+import { Hosts } from '@/views/tools/Hosts'
 
 const router = createBrowserRouter([
     {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
             {
                 path: '/task',
                 element: <Task />,
+            },
+            {
+                path: '/hosts',
+                element: <Hosts />,
             },
             {
                 path: '*',

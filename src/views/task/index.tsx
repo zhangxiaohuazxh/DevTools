@@ -28,7 +28,7 @@ import {
 } from '@ant-design/icons'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import config from '@/config/appConfig.json5'
-import { invoke } from '@tauri-apps/api/core';
+import { invoke } from '@tauri-apps/api/core'
 
 type FieldType = {
     name: string
@@ -56,11 +56,13 @@ export const Task: React.FC = () => {
         console.log('ok')
         setIsModalOpen(!isModalOpen)
         console.log('json5', config)
-        invoke('preview_hosts_mapping_tauri',).then((result)=>{
-            console.log('invoke result', result)
-        }).catch((error)=>{
-            console.error('invoke error', error)
-        })
+        invoke('preview_hosts_mapping_tauri')
+            .then((result) => {
+                console.log('invoke result', result)
+            })
+            .catch((error) => {
+                console.error('invoke error', error)
+            })
     }
 
     const editClickCallback = (operation: string) => {

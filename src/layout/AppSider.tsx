@@ -16,6 +16,7 @@ const items: MenuItem[] = [
         children: [
             { key: '/json', label: 'JSON' },
             { key: '/log', label: 'LOG' },
+            { key: '/hosts', label: 'Hosts' },
         ],
     },
 ]
