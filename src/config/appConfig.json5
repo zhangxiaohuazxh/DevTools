@@ -1,0 +1,5 @@
+{
+    // json5注释测试
+    name: 'test',
+    key: 'a',
+}

@@ -3,7 +3,8 @@ import react from '@vitejs/plugin-react'
 import * as path from 'path'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 // @ts-ignore
-import { generateVersionPlugin } from './scripts/versionTools'
+import { generateVersionPlugin } from './vite-plugins/versionTools'
+import { json5Plugin } from './vite-plugins/json5'
 
 const host = process.env.TAURI_DEV_HOST
 
@@ -12,6 +13,7 @@ export default defineConfig(async () => ({
     plugins: [
         react(),
         generateVersionPlugin(),
+        json5Plugin(),
         createSvgIconsPlugin({
             iconDirs: [path.resolve(process.cwd(), 'src/icons')],
             symbolId: 'icon-[dir]-[name]',
