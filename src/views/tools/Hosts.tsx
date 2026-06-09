@@ -14,6 +14,8 @@ import {
 import type { TableProps } from 'antd'
 import { CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
 
+type ClickType = 'edit' | 'delete' | 'copy'
+
 interface RouteMapping {
     key: string
     seq?: number
@@ -23,8 +25,6 @@ interface RouteMapping {
     tags?: string[]
     editable?: boolean
 }
-
-type ClickType = 'edit' | 'delete' | 'copy'
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
     editing: boolean
@@ -46,7 +46,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     ...restProps
 }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />
-
     return (
         <td {...restProps}>
             {editing ? (
@@ -69,27 +68,30 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
     )
 }
 
+const routes: RouteMapping[] = [
+    {
+        key: '1',
+        domain: 'hubbo.cn',
+        ip: '127.0.0.1',
+        remark: '测试数据',
+        seq: 1,
+        tags: ['test', 'development', 'production'],
+        editable: true,
+    },
+    {
+        key: '2',
+        domain: 'huawei.com',
+        ip: '127.0.0.1',
+        remark: '测试数据2',
+        seq: 2,
+        tags: ['test', 'development', 'production'],
+        editable: true,
+    },
+]
+
 export const Hosts: React.FC = () => {
-    const routes: RouteMapping[] = [
-        {
-            key: '1',
-            domain: 'hubbo.cn',
-            ip: '127.0.0.1',
-            remark: '测试数据',
-            seq: 1,
-            tags: ['test', 'development', 'production'],
-            editable: true,
-        },
-        {
-            key: '2',
-            domain: 'huawei.com',
-            ip: '127.0.0.1',
-            remark: '测试数据2',
-            seq: 2,
-            tags: ['test', 'development', 'production'],
-            editable: true,
-        },
-    ]
+    const [form] = Form.useForm()
+    const [editingKey, setEditingKey] = useState('')
     const columns = [
         {
             title: '序号',
@@ -122,7 +124,7 @@ export const Hosts: React.FC = () => {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
-            render: (_, { tags }) =>
+            render: (_: any, { tags }: RouteMapping) =>
                 tags ? (
                     <Flex gap="small" align="center" wrap>
                         {tags.map((tag) => {
@@ -144,7 +146,7 @@ export const Hosts: React.FC = () => {
         {
             title: 'Action',
             key: 'action',
-            render: (_, record) =>
+            render: (_: any, record: RouteMapping) =>
                 !isEditing(record) ? (
                     <Space size="medium">
                         <Button
@@ -181,13 +183,9 @@ export const Hosts: React.FC = () => {
                 ),
         },
     ]
-    const [form] = Form.useForm()
-    const [editingKey, setEditingKey] = useState('')
     const edit = (record: Partial<RouteMapping> & { key: React.Key }) => {
-        console.log('edit record {}', record)
         form.setFieldsValue({ ip: '', domain: '', remark: '', ...record })
         setEditingKey(record.key)
-        console.log('edit record {}', record)
     }
 
     const rowClickedCallback = (type: ClickType, record: any) => {
@@ -196,11 +194,15 @@ export const Hosts: React.FC = () => {
             edit(record)
         }
     }
-
     const isEditing = (record: RouteMapping) => record.key === editingKey
+    const cancel = () => {
+        setEditingKey('')
+    }
 
-    const save = async (key: React.Key) => {}
-
+    const save = async (key: React.Key) => {
+        console.log('save', key)
+    }
+    // @ts-ignore
     const mergedColumns: TableProps<RouteMapping>['columns'] = columns.map((col) => {
         if (!col.editable) {
             return col
@@ -216,10 +218,6 @@ export const Hosts: React.FC = () => {
             }),
         }
     })
-
-    const cancel = () => {
-        setEditingKey('')
-    }
 
     return (
         <>

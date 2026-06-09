@@ -1,6 +1,9 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 
+pub mod db;
 pub mod tools;
+
+use crate::db::init_db;
 use crate::tools::hosts::preview_hosts_mapping_tauri;
 
 #[tauri::command]
@@ -10,6 +13,7 @@ fn greet(name: &str) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    init_db("local.db");
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![greet, preview_hosts_mapping_tauri])
