@@ -15,6 +15,7 @@ import {
     TreeDataNode,
     type FormProps,
     Input,
+    Tag,
 } from 'antd'
 import '@/views/task/task.css'
 import { HappyProvider } from '@ant-design/happy-work-theme'
@@ -27,6 +28,7 @@ import {
 } from '@ant-design/icons'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
+// @ts-ignore
 import { Task as TaskType } from '@/types/tasks'
 
 type FieldType = {
@@ -165,6 +167,27 @@ export const Task: React.FC = () => {
         )
     }
 
+    const tagRender = (task: TaskType) => {
+        const config: any = {
+            high: { color: 'red', text: '高' },
+            medium: { color: 'orange', text: '中' },
+            low: { color: 'blue', text: '低' },
+        }
+        let priorityType: string = 'low'
+        if (!task.priority) {
+            priorityType = 'low'
+        } else if (task.priority > 50 && task.priority < 80) {
+            priorityType = 'medium'
+        } else {
+            priorityType = 'high'
+        }
+        return (
+            <Tag color={config[priorityType].color} style={{ marginRight: 0, fontSize: '12px' }}>
+                {config[priorityType].text}
+            </Tag>
+        )
+    }
+
     // 请求最新的任务数据
     useEffect(() => {
         fetch('/public/tasks.json', { method: 'GET' })
@@ -180,9 +203,9 @@ export const Task: React.FC = () => {
     return (
         <>
             <span className="taskContainer">
-                {tasks.map((task: TaskType, _: number) => {
-                    return (
-                        <Space orientation="horizontal" wrap size={16} key={task.taskName}>
+                <Space orientation="horizontal" wrap size={16}>
+                    {tasks.map((task: TaskType, _: number) => {
+                        return (
                             <BorderBeam
                                 color={[
                                     { color: '#2f54eb', percent: 0 },
@@ -191,9 +214,24 @@ export const Task: React.FC = () => {
                                 ]}
                             >
                                 <Card
-                                    title={task.taskName}
+                                    title={
+                                        <Space size={8}>
+                                            {tagRender(task)}
+                                            <span>{task.taskName}</span>
+                                        </Space>
+                                    }
                                     actions={getActions(task)}
-                                    style={{ width: 300 }}
+                                    style={{ width: 300, marginLeft: 'auto', marginRight: 'auto' }}
+                                    extra={
+                                        <span
+                                            style={{
+                                                fontSize: '12px',
+                                                color: 'rgba(0, 0, 0, 0.45)',
+                                            }}
+                                        >
+                                            {task.startDate} ~ {task.endDate}
+                                        </span>
+                                    }
                                 >
                                     {task.subItems?.map((subItem: TaskType, _subIndex: number) => {
                                         return (
@@ -208,9 +246,9 @@ export const Task: React.FC = () => {
                                     })}
                                 </Card>
                             </BorderBeam>
-                        </Space>
-                    )
-                })}
+                        )
+                    })}
+                </Space>
 
                 <Row gutter={24} style={{ paddingTop: '10px' }}>
                     <Col offset={1}>

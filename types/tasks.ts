@@ -9,6 +9,8 @@ export interface Task {
     notify: boolean
     // 创建时间
     createTime: Date
+    // [0-50}低优先级  [51-80}中优 [80,100] 高优先级
+    priority?: number
     // 关联人
     relationPersonList: Array<string>
     subItems?: Array<Task>
