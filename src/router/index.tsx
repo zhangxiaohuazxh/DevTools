@@ -5,6 +5,7 @@ import AppLayout from '@/layout/AppLayout'
 import { Tools } from '@/views/tools'
 import { Task } from '@/views/task'
 import { Hosts } from '@/views/tools/Hosts'
+import { ToDoTasks } from '@/views/todo'
 
 const router = createBrowserRouter([
     {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: '/hosts',
                 element: <Hosts />,
+            },
+            {
+                path: '/todo',
+                element: <ToDoTasks />,
             },
             {
                 path: '*',

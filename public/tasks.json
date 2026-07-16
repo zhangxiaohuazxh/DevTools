@@ -1,0 +1,48 @@
+[
+    {
+        "taskName": "aaa",
+        "startDate": "2026-06-30",
+        "endDate": "2026-07-04",
+        "notify": true,
+        "createTime": "2026-06-30",
+        "subItems": [
+            {
+                "taskName": "aaa-1",
+                "startDate": "2026-06-30",
+                "endDate": "2026-07-04",
+                "notify": true,
+                "createTime": "2026-06-30"
+            },
+            {
+                "taskName": "aaa-2",
+                "startDate": "2026-06-30",
+                "endDate": "2026-07-04",
+                "notify": true,
+                "createTime": "2026-06-30"
+            }
+        ]
+    },
+    {
+        "taskName": "bbb",
+        "startDate": "2026-06-30",
+        "endDate": "2026-07-04",
+        "notify": true,
+        "createTime": "2026-06-30",
+        "subItems": [
+            {
+                "taskName": "bbb-1",
+                "startDate": "2026-06-30",
+                "endDate": "2026-07-04",
+                "notify": true,
+                "createTime": "2026-06-30"
+            },
+            {
+                "taskName": "bbb-2",
+                "startDate": "2026-06-30",
+                "endDate": "2026-07-04",
+                "notify": true,
+                "createTime": "2026-06-30"
+            }
+        ]
+    }
+]

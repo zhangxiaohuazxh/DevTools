@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Card,
     Space,
-    Checkbox,
     BorderBeam,
     Row,
     Button,
@@ -27,8 +26,8 @@ import {
     DeleteOutlined,
 } from '@ant-design/icons'
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
-import config from '@/config/appConfig.json5'
-import { invoke } from '@tauri-apps/api/core'
+import dayjs from 'dayjs'
+import { Task as TaskType } from '@/types/tasks'
 
 type FieldType = {
     name: string
@@ -51,29 +50,48 @@ const { DirectoryTree } = Tree
 
 export const Task: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [form] = Form.useForm()
+    const [tasks, setTasks] = useState<Array<TaskType>>([])
 
     const handleOk = () => {
-        console.log('ok')
+        form.validateFields()
+            .then((values) => {
+                console.log('校验通过 Values:', values)
+                // TODO 保存数据
+                // setIsModalOpen(!isModalOpen)
+            })
+            .catch((errorInfo) => {
+                // form.scrollToField()
+                console.log('Validation Failed:', errorInfo)
+            })
+    }
+
+    const editClickCallback = (operation: string, task: TaskType) => {
+        console.log('edit', operation, task)
+        if (operation === 'edit') {
+            form.setFieldsValue({
+                ...task,
+                startDate: dayjs(task.startDate),
+                endDate: task.endDate ? dayjs(task.endDate) : undefined,
+            })
+            setIsModalOpen(!isModalOpen)
+        }
+    }
+
+    const addClickCallback = (_: string) => {
         setIsModalOpen(!isModalOpen)
-        console.log('json5', config)
-        invoke('preview_hosts_mapping_tauri')
-            .then((result) => {
-                console.log('invoke result', result)
-            })
-            .catch((error) => {
-                console.error('invoke error', error)
-            })
     }
 
-    const editClickCallback = (operation: string) => {
-        console.log('edit', operation)
+    const getActions = (task: TaskType) => {
+        return [
+            <EditOutlined onClick={() => editClickCallback('edit', task)} key="edit" />,
+            <SettingOutlined onClick={() => editClickCallback('setting', task)} key="setting" />,
+            <EllipsisOutlined
+                onClick={() => editClickCallback('extension', task)}
+                key="ellipsis"
+            />,
+        ]
     }
-
-    const actions: React.ReactNode[] = [
-        <EditOutlined onClick={() => editClickCallback('edit')} key="edit" />,
-        <SettingOutlined onClick={() => editClickCallback('setting')} key="setting" />,
-        <EllipsisOutlined onClick={() => editClickCallback('extension')} key="ellipsis" />,
-    ]
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
         console.log('Success:', values)
@@ -147,36 +165,59 @@ export const Task: React.FC = () => {
         )
     }
 
+    // 请求最新的任务数据
+    useEffect(() => {
+        fetch('/public/tasks.json', { method: 'GET' })
+            .then((response) => response.json())
+            .then((data) => {
+                setTasks(data)
+            })
+            .catch((error) => {
+                console.error('Error fetching tasks:', error)
+            })
+    }, [])
+
     return (
         <>
             <span className="taskContainer">
-                <Space orientation="horizontal" wrap size={16}>
-                    <BorderBeam
-                        color={[
-                            { color: '#2f54eb', percent: 0 },
-                            { color: '#722ed1', percent: 44 },
-                            { color: '#ff85c0', percent: 100 },
-                        ]}
-                    >
-                        <Card title="工作" actions={actions} style={{ width: 300 }}>
-                            <p>
-                                <Checkbox>1</Checkbox>
-                            </p>
-                            <p>
-                                <Checkbox>2</Checkbox>
-                            </p>
-                            <p>
-                                <Checkbox>3</Checkbox>
-                            </p>
-                        </Card>
-                    </BorderBeam>
-                </Space>
+                {tasks.map((task: TaskType, _: number) => {
+                    return (
+                        <Space orientation="horizontal" wrap size={16} key={task.taskName}>
+                            <BorderBeam
+                                color={[
+                                    { color: '#2f54eb', percent: 0 },
+                                    { color: '#722ed1', percent: 44 },
+                                    { color: '#ff85c0', percent: 100 },
+                                ]}
+                            >
+                                <Card
+                                    title={task.taskName}
+                                    actions={getActions(task)}
+                                    style={{ width: 300 }}
+                                >
+                                    {task.subItems?.map((subItem: TaskType, _subIndex: number) => {
+                                        return (
+                                            <ul key={subItem.taskName}>
+                                                {/* <p>
+                                                    <Checkbox>{subIndex + 1}</Checkbox>{' '}
+                                                    {subItem.taskName}
+                                                </p> */}
+                                                <li>{subItem.taskName}</li>
+                                            </ul>
+                                        )
+                                    })}
+                                </Card>
+                            </BorderBeam>
+                        </Space>
+                    )
+                })}
+
                 <Row gutter={24} style={{ paddingTop: '10px' }}>
                     <Col offset={1}>
                         <HappyProvider>
                             <Button
                                 size="large"
-                                onClick={() => setIsModalOpen(!isModalOpen)}
+                                onClick={() => addClickCallback('add')}
                                 type="primary"
                             >
                                 添加
@@ -202,6 +243,8 @@ export const Task: React.FC = () => {
                             onFinish={onFinish}
                             onFinishFailed={onFinishFailed}
                             autoComplete="off"
+                            form={form}
+                            scrollToFirstError={{ focus: true }}
                         >
                             <Form.Item<FieldType>
                                 label="任务名称"
@@ -235,24 +278,26 @@ export const Task: React.FC = () => {
                                     defaultChecked
                                 />
                             </Form.Item>
-                            <Form.Item<FieldType>
-                                label="子项任务"
-                                name="notify"
-                                rules={[{ required: false, message: '请选择是否进行通知' }]}
-                            >
-                                <DirectoryTree
-                                    multiple
-                                    draggable
-                                    defaultExpandAll
-                                    allowDrop={allowDrop}
-                                    onSelect={onSelect}
-                                    onExpand={onExpand}
-                                    treeData={treeData}
-                                    titleRender={(nodeData) =>
-                                        customTitleRender(nodeData as DataNode)
-                                    }
-                                />
-                            </Form.Item>
+                            {false && (
+                                <Form.Item<FieldType>
+                                    label="子项任务"
+                                    name="notify"
+                                    rules={[{ required: false, message: '请选择是否进行通知' }]}
+                                >
+                                    <DirectoryTree
+                                        multiple
+                                        draggable
+                                        defaultExpandAll
+                                        allowDrop={allowDrop}
+                                        onSelect={onSelect}
+                                        onExpand={onExpand}
+                                        treeData={treeData}
+                                        titleRender={(nodeData) =>
+                                            customTitleRender(nodeData as DataNode)
+                                        }
+                                    />
+                                </Form.Item>
+                            )}
                         </Form>
                     </Modal>
                 </span>
